@@ -1,0 +1,80 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    /* justify-content: center;
+    align-items: center; */
+    background-color: #ffffff;
+}
+
+h1 {
+  font-family: 'Inknut Antiqua', serif;
+}
+
+p, .instruct, #inputField::placeholder, #inputField {
+  font-family: 'DM Mono', monospace;
+}
+
+.titleblock {
+  position: absolute;
+  font-size: 10px; 
+  line-height: 1; 
+  /* transform: translate(-50%, -50%); */
+  color: black; 
+  padding: 10px;
+  /* border-radius: 5px;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);  */
+  top: 10px;
+  left: 15px;
+}
+
+
+
+.instruct {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 85%;
+  left: 50%;
+  font-size: 12px;               /* Change the font size */
+  /* font-family: 'lucidatypewriter', monospace;   */
+  color: #282727;                    /* Style the placeholder text */
+  padding: 20px; 
+  background-color: #ffffff;
+}
+
+#bold {
+  font-weight: bold;
+}
+
+#inputField {
+  position: absolute;
+  top: 90%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #ffffff; 
+  padding: 10px;              /* Increase padding to give more space inside the input */
+  border: 2px solid #282828;   /* Set border width and color */
+  border-radius: 25px;         /* Round the corners */
+  font-size: 12px;             /* Increase font size for better readability */
+  width: 300px;                /* Set the width of the input field */
+  height: 15px;                /* Set the height of the input field */
+  text-align: center;
+  color: #282727;              /* Set text color */
+}
+
+#inputField::placeholder {
+  font-size: 12px;             /* Adjust the font size of the placeholder */
+  color: #282727;              /* Style the placeholder text */
+  font-style: italic;          /* Make placeholder text italic */
+}
+
+
+#inputField:focus {
+  outline: none;                 /* Remove default outline on focus */
+  border-color: #2980b9;         /* Change border color on focus */
+  box-shadow: 100px #2980b9;   /* Add shadow effect on focus */
+
+}
+
