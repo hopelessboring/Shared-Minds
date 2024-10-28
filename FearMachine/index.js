@@ -9,7 +9,7 @@ const fs = require('fs'); //load fears.json
 
 // Set up Replicate with your API key
 const replicate = new Replicate({
-  auth: process.env.REPLICATE_API_TOKEN,
+    auth: process.env.REPLICATE_API_TOKEN,
 });
 
 //load fears.json
@@ -19,7 +19,7 @@ try {
     const rawData = fs.readFileSync(path.join(__dirname, 'fears.json'));
     fearsData = JSON.parse(rawData);
     console.log("Fears data loaded successfully");
-    randomFear = Math.floor(Math.random() * 101); 
+    randomFear = Math.floor(Math.random() * 101);
     console.log(fearsData.fears[randomFear]);
 } catch (error) {
     console.error('Error reading fears.json:', error);
@@ -36,45 +36,79 @@ app.use(express.json()); // Parses JSON request bodies
 // Middleware to serve static files 
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Define API endpoint for generating a fear response
-app.post('/api/generate', async (req, res) => {
-  console.log("API GENERATE FUNCTION FIRED");
-  randomFear = Math.floor(Math.random() * 101); 
-  let randomFearString = JSON.stringify(fearsData.fears[randomFear]);
-  console.log(`random fear is ${randomFearString}`);
-  const input = {
-    prompt: `In less than six words, what is something that people are most afraid of? Use themes from movies and books to inform ideas. It should be related to ${randomFearString} and reiterate this theme and ideally the main word in the response. Don't write about dark or the darkness`,
-    system_prompt: "You are a talented storyteller. You are concise and share no superfluous explanation or detail.",
-    max_new_tokens: 512,
-    temperature: 0.94,
-    top_p: 0.95,
-
-  };
-
-  try {
-    const response = await replicate.run("meta/meta-llama-3-8b-instruct", { input });
-    console.log(`response is ${response}`);
-    let responseString = response.join('');
-
-    responseString = responseString.trim();
-
-    // Replace multiple newlines with a single space
-    responseString = responseString.replace(/\n+/g, " ");
-
-    // Remove all special characters and punctuation
-    responseString = responseString.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()'"]/g, "");
-
-    // Additional trim to catch any lingering whitespace
-    responseString = responseString.trim();
-    console.log(`response string is ${responseString}`);
-    res.json({ response: responseString }); // Send the response back to the front end as JSON
-  } catch (error) {
-    console.error('Error:', error);
-    res.status(500).json({ error: 'Failed to generate response' });
-  }
-});
-
 // Start the server
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+    console.log(`Server running on port ${PORT}`);
 });
+
+// API ENDPOINT FOR NIGHTMARE GENERATION
+app.post('/api/generate', async (req, res) => {
+    console.log("API GENERATE FUNCTION FIRED");
+    randomFear = Math.floor(Math.random() * 101);
+    let randomFearString = JSON.stringify(fearsData.fears[randomFear]);
+    console.log(`random fear is ${randomFearString}`);
+    const input = {
+        prompt: `In less than six words, what is something that people are most afraid of? Use themes from movies and books to inform ideas. It should be related to ${randomFearString} and reiterate this theme and ideally the main word in the response. Don't write about dark or the darkness`,
+        system_prompt: "You are a talented storyteller. You are concise and share no superfluous explanation or detail.",
+        max_new_tokens: 512,
+        temperature: 0.94,
+        top_p: 0.95,
+    };
+
+    //API CALL FOR NIGHTMARE GENERATION
+    try {
+        const response = await replicate.run("meta/meta-llama-3-8b-instruct", { input });
+        console.log(`response is ${response}`);
+        let responseString = response.join('');
+
+        responseString = responseString.trim();
+
+        // Replace multiple newlines with a single space
+        responseString = responseString.replace(/\n+/g, " ");
+
+        // Remove all special characters and punctuation
+        responseString = responseString.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()'"]/g, "");
+
+        // Additional trim to catch any lingering whitespace
+        responseString = responseString.trim();
+        console.log(`response string is ${responseString}`);
+        res.json({ response: responseString }); // Send the response back to the front end as JSON
+        getEmbeddings(responseString);
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Failed to generate response' });
+    }
+});
+
+
+
+//API ENDPOINT FOR EMBEDDING GENERATION
+//document.getElementById("feedback").innerHTML = "Getting Embeddings...";
+//let promptInLines = p_prompt.replace(/,/g, "\n");
+async function getEmbeddings(responseString) {
+let embeddingData = {
+    version: "75b33f253f7714a281ad3e9b28f63e3232d583716ef6718f2e46641077ea040a",
+    input: {
+        // inputs: sentences,
+        inputs: responseString
+    },
+};
+console.log("Asking for Embedding Similarities From Replicate via Proxy");
+options = {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json",
+    },
+    body: JSON.stringify(embeddingData),
+};
+const replicateProxy = "https://replicate-api-proxy.glitch.me"
+
+const replicateURL = replicateProxy + "/create_n_get/";
+console.log("url", replicateURL, "options", options);
+const raw = await fetch(replicateURL, options)
+const embeddingsJSON = await raw.json();
+console.log("embeddingsJSON", embeddingsJSON.output);
+// document.body.style.cursor = "auto";
+// localStorage.setItem("embeddings", JSON.stringify(embeddingsJSON.output));
+// runUMAP(embeddingsJSON.output)
+}

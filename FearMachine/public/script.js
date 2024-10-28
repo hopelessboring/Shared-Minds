@@ -48,8 +48,8 @@
         console.log("Response from server:", data.response);
         document.body.style.cursor = "default";
         
-        // Draw response text on canvas (optional)
-        drawWord(data.response);
+        // // Draw response text on canvas (optional)
+        // drawWord(data.response);
 
       } catch (error) {
         console.error('Error:', error);
@@ -57,9 +57,9 @@
       }
     }
 
-    function drawWord(word) {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.font = "20px Arial";
-      ctx.fillStyle = "black";
-      ctx.fillText(word, canvas.width / 2, canvas.height / 2);
-    }
+    // function drawWord(word) {
+    //   ctx.clearRect(0, 0, canvas.width, canvas.height);
+    //   ctx.font = "20px Arial";
+    //   ctx.fillStyle = "black";
+    //   ctx.fillText(word, canvas.width / 2, canvas.height / 2);
+    // }
