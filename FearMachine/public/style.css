@@ -1,0 +1,129 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    /* justify-content: center;
+    align-items: center; */
+    background-color: #f5f0f5;
+}
+
+.instructions {
+  position: absolute;
+  font-size: 10px; 
+  line-height: 1; 
+  font-family: 'lucidatypewriter', monospace;     
+  /* transform: translate(-50%, -50%); */
+  color: black; 
+  padding: 10px;
+  /* border-radius: 5px;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);  */
+}
+
+#top {
+  top: 10px;
+  left: 10px;
+}
+
+#bottom {
+  bottom: 10px;
+  left: 10px;
+}
+
+#bold {
+  font-weight: bold;
+}
+
+  .diagram {
+    font-family: 'lucidatypewriter', monospace;  
+    color: #282727;  
+  }
+
+  .circle {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #d88f8f; 
+    /* color: white; */
+    padding: 10px 20px;
+    border-radius: 100px;
+  }
+
+  .central {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #d88f8f; 
+    font-size: 16px;
+  }
+
+    /* Level 1 */
+  .l1 {
+    background-color: rgba(219,160,160,.6);
+    outline: 1px solid #282727;
+    width: 100px;
+    height: 100px;
+    text-align: center;
+    font-size: 11px;
+
+  } 
+
+  /* Level 2 */
+  .l2 {
+    background-color: rgba(219,160,160,.2);
+    outline: 1px solid #282727;
+    width: 100px;
+    height: 100px;
+    text-align: center;
+    font-size: 11px;
+}
+
+  /* Position the elements in a circle */
+
+  /* L2 */
+#item0 { top: 30%; left: 20%; transform: translate(-50%, -50%); }
+#item1 { top: 10%; left: 50%; transform: translate(-50%, -50%); } 
+#item2 { top: 30%; left: 80%; transform: translate(-50%, -50%); }
+#item3 { top: 50%; left: 90%; transform: translate(-50%, -50%); }
+#item4 { top: 70%; left: 80%; transform: translate(-50%, -50%); }
+#item5 { top: 90%; left: 50%; transform: translate(-50%, -50%); }
+#item6 { top: 70%; left: 20%; transform: translate(-50%, -50%); }
+#item7 { top: 50%; left: 10%; transform: translate(-50%, -50%); }
+
+/* L1 */
+#item8 { top: 35%; left: 50%; transform: translate(-50%, -50%); }
+#item9 { top: 50%; left: 35%; transform: translate(-50%, -50%); }
+#item10 { top: 50%; left: 65%; transform: translate(-50%, -50%); }
+#item11 { top: 65%; left: 50%; transform: translate(-50%, -50%); } 
+
+#mainButton {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #d88f8f; 
+  width: auto;                  /* Set width of the input field */
+  padding: 10px;                 /* Add padding inside the input */
+  border: 2px solid #3498db;     /* Set border width and color */
+  border-radius: 25px;            /* Round the corners */
+  font-size: 14px;               /* Change the font size */
+  font-family: 'lucidatypewriter', monospace;  
+  text-align: center;
+  color: #282727;                   /* Set text color */
+}
+
+#mainButton:focus {
+  outline: none;                 /* Remove default outline on focus */
+  border-color: #2980b9;         /* Change border color on focus */
+  box-shadow: 0 0 5px #2980b9;   /* Add shadow effect on focus */
+  /*background-color: #d88f8f; 
+  border-radius: 25px;             Round the corners */
+}
+
+#mainButton:placeholder {
+  color: #282727;                    /* Style the placeholder text */
+  font-style: italic;            /* Make placeholder text italic */
+}
+
+
