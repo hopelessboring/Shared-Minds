@@ -6,8 +6,9 @@ const Replicate = require("replicate");
 const app = express();
 const PORT = 3000;
 const fs = require('fs'); //load fears.json
-const UMAP = require('umap-js');
+const UMAP = require('umap-js').UMAP;  
 const socket = require('socket.io');
+const seedrandom = require('seedrandom'); // Add this line
 
 // Set up Replicate with your API key
 const replicate = new Replicate({
@@ -75,7 +76,7 @@ app.post('/api/generate', async (req, res) => {
         responseString = responseString.trim();
         console.log(`response string is ${responseString}`);
         res.json({ response: responseString }); // Send the response back to the front end as JSON
-        getEmbeddings(responseString);
+        await getEmbeddings(responseString);
     } catch (error) {
         console.error('Error:', error);
         res.status(500).json({ error: 'Failed to generate response' });
@@ -109,39 +110,53 @@ const replicateURL = replicateProxy + "/create_n_get/";
 console.log("url", replicateURL, "options", options);
 const raw = await fetch(replicateURL, options)
 const embeddingsJSON = await raw.json();
-console.log("embeddingsJSON", embeddingsJSON.output);
+//console.log("embeddingsJSON", embeddingsJSON.output);
 // document.body.style.cursor = "auto";
 // localStorage.setItem("embeddings", JSON.stringify(embeddingsJSON.output));
 runUMAP(embeddingsJSON.output)
 }
 
-function runUMAP(embeddingsAndSentences) {
-
-    //comes back with a list of embeddings and Sentences, single out the embeddings for UMAP
-    console.log("embeddingsAndSentences", embeddingsAndSentences);
+async function runUMAP(embeddingsAndSentences) {
+    // console.log("embeddingsAndSentences", embeddingsAndSentences);
     let embeddings = [];
-    for (let i = 0; i < embeddingsAndSentences.length; i++) {
-        embeddings.push(embeddingsAndSentences[i].embedding);
+    var totalNum = 0; ; 
+    //console.log("embeddingsAndSentences length:", embeddingsAndSentences[0].embedding.length);
+
+    for (let i = 0; i < embeddingsAndSentences[0].embedding.length; i++) {
+        embeddings.push(embeddingsAndSentences[0].embedding[i]);
+        totalNum++;
     }
-    //let fittings = runUMAP(embeddings);
-    var myrng = new Math.seedrandom('hello.');
+    // console.log("totalNum: ", totalNum);
+    // console.log("embeddings[totalNum]: ", embeddings[totalNum-1]);
+    
+    // return; 
+
+    var myrng = seedrandom('hello.');
     let umap = new UMAP({
         nNeighbors: 6,
         minDist: 0.1,
         nComponents: 2,
-        random: myrng,  //special library seeded random so it is the same random numbers every time
+        random: myrng,  //special library seeded random so it is the same randome numbers every time
         spread: 0.99,
         //distanceFn: 'cosine',
     });
+    
+    if (embeddings.length < 2) {
+        console.log("Not enough data points for UMAP. Skipping dimensionality reduction.");
+        return;
+    }
+    
     let fittings = umap.fit(embeddings);
+    //console.log("fittings:", fittings);
     fittings = normalize(fittings);  //normalize to 0-1
+    //console.log("normalized fittings:", fittings);
     for (let i = 0; i < embeddingsAndSentences.length; i++) {
-        placeSentence(embeddingsAndSentences[i].input, fittings[i]);
+        console.log("embeddingsAndSentences[i].input:", embeddingsAndSentences[i].input);
+        console.log("fittings[i]:", fittings[i]);
+        // placeSentence(embeddingsAndSentences[i].input, fittings[i]);
     }
     //console.log("fitting", fitting);
 }
-
-
 
 function normalize(arrayOfNumbers) {
     //find max and min in the array
@@ -165,5 +180,3 @@ function normalize(arrayOfNumbers) {
     }
     return arrayOfNumbers;
 }
-
-
