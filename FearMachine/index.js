@@ -22,8 +22,18 @@ const __dirname = path.dirname(__filename);
 // const { Low, JSONFile } = require('lowdb');
 import { Low } from 'lowdb';
 import { JSONFile } from 'lowdb';
+const defaultData = { database: [] };
 const adapter = new JSONFile('database.json');
 const db = new Low(adapter);
+
+// Initialize and read the database
+async function initializeDB() {
+    await db.read(); // Read data from the JSON file
+    db.data = db.data || defaultData; // If no data is present, set default
+  }
+  
+  // Initialize the DB
+  initializeDB();
 
 // Setup Replicate with API key
 const replicate = new Replicate({
@@ -48,25 +58,14 @@ function newConnection(socket) {
 }
 
 io.on('connection', (socket) => {
-    socket.on('newFearClick', async (data) => {
-        console.log(`newFearClick ${data.buttonID} pressed at ${data.timestamp}`);
-        db.data.posts.push({ buttonid: `${data.buttonID}`, timestamp: `${data.timestamp}` });
+    socket.on('newFearClick', async (clickData) => {
+        db.data.nightmares.push({ buttonid: `${clickData.buttonID}`, timestamp: `${clickData.timestamp}` });
         await db.write();
+        console.log(`newFearClick added to database ${clickData.buttonID} pressed at ${clickData.timestamp}`);
     });
 });
 
-//load fears.json to help randomize fear generation prompting
-let fearsData;
-let randomFear;
-try {
-    const rawData = fs.readFileSync(path.join(__dirname, 'fears.json'));
-    fearsData = JSON.parse(rawData);
-    console.log("Fears data loaded successfully");
-    randomFear = Math.floor(Math.random() * 101);
-    console.log(fearsData.fears[randomFear]);
-} catch (error) {
-    console.error('Error reading fears.json:', error);
-}
+getRandomFear();
 
 // // Get the directory path using import.meta.url in ES Modules
 // const __filename = fileURLToPath(import.meta.url);
@@ -219,4 +218,19 @@ function normalize(arrayOfNumbers) {
         }
     }
     return arrayOfNumbers;
+}
+
+function getRandomFear() {
+    //load fears.json to help randomize fear generation prompting
+    let fearsData;
+    let randomFear;
+    try {
+        const rawData = fs.readFileSync(path.join(__dirname, 'fears.json'));
+        fearsData = JSON.parse(rawData);
+        console.log("Fears data loaded successfully");
+        randomFear = Math.floor(Math.random() * 101);
+        console.log(fearsData.fears[randomFear]);
+    } catch (error) {
+        console.error('Error reading fears.json:', error);
+    }
 }
