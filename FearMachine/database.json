@@ -39,6 +39,242 @@
     {
       "buttonid": "inputBox",
       "timestamp": "1730229773764"
+    },
+    {
+      "buttonid": "inputBox",
+      "timestamp": "1730230863614, fearPrompt: \"Losing one's sense of hope\", cleanResponse: undefined"
+    },
+    {
+      "buttonid": "inputBox",
+      "timestamp": "1730231043330, fearPrompt: \"Losing one's identity\", cleanResponse: undefined"
+    },
+    {
+      "buttonid": "inputBox",
+      "timestamp": "1730231169869",
+      "fearPrompt": "\"The fear of being replaced\"",
+      "cleanResponse": "undefined"
+    },
+    {
+      "buttonid": "inputBox",
+      "timestamp": "1730231367977",
+      "fearPrompt": "\"Enclosed spaces and claustrophobia\"",
+      "cleanResponse": "undefined"
+    },
+    {
+      "buttonid": "inputBox",
+      "timestamp": "1730231529059",
+      "fearPrompt": "\"Ghosts and spirits\"",
+      "cleanResponse": "undefined"
+    },
+    {
+      "buttonid": "inputBox",
+      "timestamp": "1730231744651",
+      "fearPrompt": "\"Hurricanes and natural disasters\"",
+      "cleanResponse": "undefined"
+    },
+    {
+      "buttonid": "inputBox",
+      "timestamp": "1730231749539",
+      "fearPrompt": "\"The fear of being trapped in a world of chaos\"",
+      "cleanResponse": "Loss of loved ones in storm"
+    },
+    {
+      "buttonid": "inputBox",
+      "timestamp": "1730231911587",
+      "fearPrompt": "\"The end of the world\"",
+      "cleanResponse": "Loss of control in a maelstrom"
+    },
+    {
+      "buttonid": "inputBox",
+      "timestamp": "1730231926866",
+      "fearPrompt": "\"The fear of being trapped in a world of chaos\"",
+      "cleanResponse": "undefined"
+    },
+    {
+      "buttonid": "inputBox",
+      "timestamp": "1730231929468",
+      "fearPrompt": "\"Pandemics and disease outbreaks\"",
+      "cleanResponse": "Being lost in a madhouse"
+    },
+    {
+      "buttonid": "inputBox",
+      "timestamp": "1730232141943",
+      "fearPrompt": "\"Falling\"",
+      "cleanResponse": "undefined"
+    },
+    {
+      "buttonid": "inputBox",
+      "timestamp": "1730232149581",
+      "fearPrompt": "\"Vampires\"",
+      "cleanResponse": "Falling into the abyss of nothingness"
+    },
+    {
+      "buttonid": "inputBox",
+      "timestamp": "1730232158554",
+      "fearPrompt": "\"The fear of the future\"",
+      "cleanResponse": "undefined"
+    },
+    {
+      "buttonid": "inputBox",
+      "timestamp": "1730232511693",
+      "fearPrompt": "\"Fear of losing control\"",
+      "cleanResponse": "undefined"
+    },
+    {
+      "buttonid": "inputBox",
+      "timestamp": "1730232532625",
+      "fearPrompt": "\"Ghosts and spirits\"",
+      "cleanResponse": "undefined"
+    },
+    {
+      "buttonid": "inputBox",
+      "timestamp": "1730232536395",
+      "fearPrompt": "\"Asteroid impacts\"",
+      "cleanResponse": "undefined"
+    },
+    {
+      "buttonid": "inputBox",
+      "timestamp": "1730232540331",
+      "fearPrompt": "\"Online harassment and cyberbullying\"",
+      "cleanResponse": "undefined"
+    },
+    {
+      "buttonid": "inputBox",
+      "timestamp": "1730232543451",
+      "fearPrompt": "\"Fear of being watched\"",
+      "cleanResponse": "undefined"
+    },
+    {
+      "buttonid": "inputBox",
+      "timestamp": "1730232546656",
+      "fearPrompt": "\"Fear of losing control\"",
+      "cleanResponse": "undefined"
+    },
+    {
+      "buttonid": "inputBox",
+      "timestamp": "1730232581557",
+      "fearPrompt": "\"Losing one's sense of purpose\"",
+      "cleanResponse": "undefined"
+    },
+    {
+      "buttonid": "inputBox",
+      "timestamp": "1730232585909",
+      "fearPrompt": "\"Being trapped in a never-ending nightmare\"",
+      "cleanResponse": "undefined"
+    },
+    {
+      "buttonid": "inputBox",
+      "timestamp": "1730232608792",
+      "fearPrompt": "\"Public speaking and embarrassment\"",
+      "cleanResponse": "undefined"
+    },
+    {
+      "buttonid": "inputBox",
+      "timestamp": "1730232819595",
+      "fearPrompt": "\"The power of love\"",
+      "cleanResponse": "undefined"
+    },
+    {
+      "buttonid": "inputBox",
+      "timestamp": "1730232889152",
+      "fearPrompt": "\"Nuclear meltdowns\"",
+      "cleanResponse": "undefined"
+    },
+    {
+      "buttonid": "inputBox",
+      "timestamp": "1730232906782",
+      "fearPrompt": "\"Nuclear meltdowns\"",
+      "cleanResponse": "undefined"
+    },
+    {
+      "buttonid": "inputBox",
+      "timestamp": "1730232916339",
+      "fearPrompt": "\"Sharks\"",
+      "cleanResponse": "undefined"
+    },
+    {
+      "buttonid": "inputBox",
+      "timestamp": "1730233011316",
+      "fearPrompt": "\"The power of the past\"",
+      "cleanResponse": "undefined"
+    },
+    {
+      "buttonid": "inputBox",
+      "timestamp": "1730233256464",
+      "fearPrompt": "\"The fear of the future\"",
+      "cleanResponse": "undefined"
+    },
+    {
+      "buttonid": "inputBox",
+      "timestamp": "1730233263235",
+      "fearPrompt": "\"Robot uprising\"",
+      "cleanResponse": "undefined"
+    },
+    {
+      "buttonid": "inputBox",
+      "timestamp": "1730233461849",
+      "fearPrompt": "\"Droughts and water scarcity\"",
+      "cleanResponse": "undefined"
+    },
+    {
+      "buttonid": "inputBox",
+      "timestamp": "1730233466383",
+      "fearPrompt": "\"Losing one's sense of self\"",
+      "cleanResponse": "undefined"
+    },
+    {
+      "buttonid": "inputBox",
+      "timestamp": "1730233469118",
+      "fearPrompt": "\"Social media obsession\"",
+      "cleanResponse": "undefined"
+    },
+    {
+      "buttonid": "inputBox",
+      "timestamp": "1730233505298",
+      "fearPrompt": "\"Enclosed spaces and claustrophobia\"",
+      "cleanResponse": "undefined"
+    },
+    {
+      "buttonid": "inputBox",
+      "timestamp": "1730233614218",
+      "fearPrompt": "\"Giant spiders\"",
+      "cleanResponse": "undefined"
+    },
+    {
+      "buttonid": "inputBox",
+      "timestamp": "1730233627951",
+      "fearPrompt": "\"Being buried alive\"",
+      "cleanResponse": "undefined"
+    },
+    {
+      "buttonid": "inputBox",
+      "timestamp": "1730233910871",
+      "fearPrompt": "\"The power of the government\"",
+      "cleanResponse": "Tyranny of the Surveillance State"
+    },
+    {
+      "buttonid": "inputBox",
+      "timestamp": "1730233923715",
+      "fearPrompt": "\"The unknown\"",
+      "cleanResponse": "The Unseen that Lies Ahead"
+    },
+    {
+      "buttonid": "inputBox",
+      "timestamp": "1730233926902",
+      "fearPrompt": "\"Giant insects\"",
+      "cleanResponse": "Swarm of Spiders Consumes Everything"
+    },
+    {
+      "buttonid": "inputBox",
+      "timestamp": "1730233940329",
+      "fearPrompt": "\"Hurricanes and natural disasters\"",
+      "cleanResponse": "Floodwaters crushing drowning and despairing"
+    },
+    {
+      "buttonid": "inputBox",
+      "timestamp": "1730233947317",
+      "fearPrompt": "\"Biometric tracking and surveillance\"",
+      "cleanResponse": "Watching eyes in every corner"
     }
   ]
 }
