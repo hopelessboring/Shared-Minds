@@ -6,6 +6,8 @@ const Replicate = require("replicate");
 const app = express();
 const PORT = 3000;
 const fs = require('fs'); //load fears.json
+const UMAP = require('umap-js');
+const socket = require('socket.io');
 
 // Set up Replicate with your API key
 const replicate = new Replicate({
@@ -110,5 +112,58 @@ const embeddingsJSON = await raw.json();
 console.log("embeddingsJSON", embeddingsJSON.output);
 // document.body.style.cursor = "auto";
 // localStorage.setItem("embeddings", JSON.stringify(embeddingsJSON.output));
-// runUMAP(embeddingsJSON.output)
+runUMAP(embeddingsJSON.output)
 }
+
+function runUMAP(embeddingsAndSentences) {
+
+    //comes back with a list of embeddings and Sentences, single out the embeddings for UMAP
+    console.log("embeddingsAndSentences", embeddingsAndSentences);
+    let embeddings = [];
+    for (let i = 0; i < embeddingsAndSentences.length; i++) {
+        embeddings.push(embeddingsAndSentences[i].embedding);
+    }
+    //let fittings = runUMAP(embeddings);
+    var myrng = new Math.seedrandom('hello.');
+    let umap = new UMAP({
+        nNeighbors: 6,
+        minDist: 0.1,
+        nComponents: 2,
+        random: myrng,  //special library seeded random so it is the same random numbers every time
+        spread: 0.99,
+        //distanceFn: 'cosine',
+    });
+    let fittings = umap.fit(embeddings);
+    fittings = normalize(fittings);  //normalize to 0-1
+    for (let i = 0; i < embeddingsAndSentences.length; i++) {
+        placeSentence(embeddingsAndSentences[i].input, fittings[i]);
+    }
+    //console.log("fitting", fitting);
+}
+
+
+
+function normalize(arrayOfNumbers) {
+    //find max and min in the array
+    let max = [0, 0];
+    let min = [0, 0];
+    for (let i = 0; i < arrayOfNumbers.length; i++) {
+        for (let j = 0; j < 2; j++) {
+            if (arrayOfNumbers[i][j] > max[j]) {
+                max[j] = arrayOfNumbers[i][j];
+            }
+            if (arrayOfNumbers[i][j] < min[j]) {
+                min[j] = arrayOfNumbers[i][j];
+            }
+        }
+    }
+    //normalize
+    for (let i = 0; i < arrayOfNumbers.length; i++) {
+        for (let j = 0; j < 2; j++) {
+            arrayOfNumbers[i][j] = (arrayOfNumbers[i][j] - min[j]) / (max[j] - min[j]);
+        }
+    }
+    return arrayOfNumbers;
+}
+
+
