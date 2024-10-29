@@ -1,21 +1,61 @@
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors'); // to allow requests from different origins
-const path = require('path'); // to serve static files
-const Replicate = require("replicate");
+import dotenv from 'dotenv';
+dotenv.config();
+import express from 'express';
+import cors from 'cors'; 
+import path from 'path'; // to serve static files
+import Replicate from "replicate";
+import fs from 'fs'; //to load fears.json
+import UMAP from 'umap-js';  
+import seedrandom from 'seedrandom'; //to randomize UMAP
+import { fileURLToPath } from 'url';
+
 const app = express();
 const PORT = 3000;
-const fs = require('fs'); //load fears.json
-const UMAP = require('umap-js').UMAP;  
-const socket = require('socket.io');
-const seedrandom = require('seedrandom'); // Add this line
 
-// Set up Replicate with your API key
+// Get the directory path using import.meta.url in ES Modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+
+
+//Setup LowDB
+// const { Low, JSONFile } = require('lowdb');
+import { Low } from 'lowdb';
+import { JSONFile } from 'lowdb';
+const adapter = new JSONFile('database.json');
+const db = new Low(adapter);
+
+// Setup Replicate with API key
 const replicate = new Replicate({
     auth: process.env.REPLICATE_API_TOKEN,
 });
 
-//load fears.json
+// Setup Socket.io
+import { Server } from 'socket.io';
+let server = app.listen(PORT, () => {
+    console.log(`Boom Server running on port ${PORT}`);
+});
+let io = new Server(server, {
+    cors: {
+        origin: "http://localhost:3000",
+        methods: ["GET", "POST"]
+    }
+});
+io.sockets.on('connection', newConnection);
+
+function newConnection(socket) {
+    console.log(`New connection: ${socket.id}`);
+}
+
+io.on('connection', (socket) => {
+    socket.on('newFearClick', async (data) => {
+        console.log(`newFearClick ${data.buttonID} pressed at ${data.timestamp}`);
+        db.data.posts.push({ buttonid: `${data.buttonID}`, timestamp: `${data.timestamp}` });
+        await db.write();
+    });
+});
+
+//load fears.json to help randomize fear generation prompting
 let fearsData;
 let randomFear;
 try {
@@ -39,10 +79,10 @@ app.use(express.json()); // Parses JSON request bodies
 // Middleware to serve static files 
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Start the server
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
+// // Start the server
+// app.listen(PORT, () => {
+//     console.log(`Server running on port ${PORT}`);
+// });
 
 // API ENDPOINT FOR NIGHTMARE GENERATION
 app.post('/api/generate', async (req, res) => {
