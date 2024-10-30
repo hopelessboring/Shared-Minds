@@ -295,6 +295,36 @@
       "fearPrompt": "\"The unknown fate of a loved one\"",
       "cleanResponse": "Loss of the ones left behind",
       "lowDimEmbeddings": "undefined"
+    },
+    {
+      "buttonid": "inputBox",
+      "timestamp": "1730290099566",
+      "fearPrompt": "\"Drowning\"",
+      "cleanResponse": "Drowning in the abyss of memories",
+      "lowDimEmbeddings": "undefined"
+    },
+    {
+      "buttonid": "inputBox",
+      "timestamp": "1730291667770",
+      "fearPrompt": "\"Public speaking\"",
+      "cleanResponse": "Being ridiculed in public speaking",
+      "lowDimEmbeddings": "undefined"
+    },
+    {
+      "buttonid": "inputBox",
+      "timestamp": 1730291857014,
+      "fearPrompt": "\"The fear of being haunted by one's past\"",
+      "cleanResponse": "Shadows of forgotten memories haunting"
+    },
+    {
+      "buttonid": "inputBox",
+      "timestamp": 1730291900120,
+      "fearPrompt": "\"The power of forgiveness\"",
+      "cleanResponse": "Facing the Unforgivable they forgive",
+      "lowDimEmbeddings": [
+        0.5740080098813107,
+        0.22458979000607676
+      ]
     }
   ]
 }

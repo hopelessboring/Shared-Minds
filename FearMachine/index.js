@@ -58,7 +58,7 @@ loadFearRandomizer(); //Initialize the fear randomizer for ML prompting
 io.on('connection', (socket) => {
     socket.on('newFearClick', async (clickData) => {
         const { randomFearString, responseString } = await nightmareGeneration(); //Initialize the nightmare generation API endpoint
-        db.data.nightmares.push({ buttonid: `${clickData.buttonID}`, timestamp: `${clickData.timestamp}`, fearPrompt: `${randomFearString}`, cleanResponse: `${responseString}`, lowDimEmbeddings: `${lowDimEmbeddings}`});
+        db.data.nightmares.push({ buttonid: clickData.buttonID, timestamp: clickData.timestamp, fearPrompt: randomFearString, cleanResponse: responseString, lowDimEmbeddings: lowDimEmbeddings});
         await db.write();
         console.log(`newFearClick added to database ${clickData.buttonID} pressed at ${clickData.timestamp}`);
     });
@@ -165,8 +165,8 @@ async function runUMAP(embeddingsAndSentences) {
         embeddings.push(embeddingsAndSentences[0].embedding[i]);
         totalNum++;
     }
-    // console.log("totalNum: ", totalNum);
-    // console.log("embeddings[totalNum]: ", embeddings[totalNum-1]);
+    console.log("totalNum: ", totalNum);
+    console.log("embeddings[totalNum]: ", embeddings[totalNum-1]);
     
     // return; 
 
@@ -175,7 +175,7 @@ async function runUMAP(embeddingsAndSentences) {
         nNeighbors: 6,
         minDist: 0.1,
         nComponents: 2,
-        random: myrng,  //special library seeded random so it is the same randome numbers every time
+        random: myrng,  //special library seeded random so it is the same random numbers every time
         spread: 0.99,
         //distanceFn: 'cosine',
     });
@@ -192,8 +192,9 @@ async function runUMAP(embeddingsAndSentences) {
     console.log("embeddingsAndSentences length:", embeddingsAndSentences.length);
     for (let i = 0; i < embeddingsAndSentences.length; i++) {
         console.log("embeddingsAndSentences[i].input:", embeddingsAndSentences[i].input);
-        console.log("fittings[i]:", fittings[i]);
-        return JSON.parse(fittings[i]);
+        console.log("fittings[i]:"); 
+        console.log(fittings[i]);
+        return fittings[i];
         // placeSentence(embeddingsAndSentences[i].input, fittings[i]);
     }
     //console.log("fitting", fitting);
