@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
 import express from 'express';
-import cors from 'cors'; 
+import cors from 'cors';
 import path from 'path'; // to serve static files
 import Replicate from "replicate";
 import fs from 'fs'; //to load fears.json
@@ -21,6 +21,7 @@ let randomFear;
 let randomFearString;
 let responseString;
 let lowDimEmbeddings;
+let highDimEmbeddings;
 
 //Setup LowDB
 // const { Low, JSONFile } = require('lowdb');
@@ -58,7 +59,7 @@ loadFearRandomizer(); //Initialize the fear randomizer for ML prompting
 io.on('connection', (socket) => {
     socket.on('newFearClick', async (clickData) => {
         const { randomFearString, responseString } = await nightmareGeneration(); //Initialize the nightmare generation API endpoint
-        db.data.nightmares.push({ buttonid: clickData.buttonID, timestamp: clickData.timestamp, fearPrompt: randomFearString, cleanResponse: responseString, lowDimEmbeddings: lowDimEmbeddings});
+        db.data.nightmares.push({ buttonid: clickData.buttonID, timestamp: clickData.timestamp, fearPrompt: randomFearString, cleanResponse: responseString, highDimEmbeddings: highDimEmbeddings, lowDimEmbeddings: lowDimEmbeddings });
         await db.write();
         console.log(`newFearClick added to database ${clickData.buttonID} pressed at ${clickData.timestamp}`);
     });
@@ -73,7 +74,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // API ENDPOINT FOR NIGHTMARE GENERATION
 async function nightmareGeneration() {
-// app.post('/api/generate', async (req, res) => {
+    // app.post('/api/generate', async (req, res) => {
     console.log("API GENERATE FUNCTION FIRED");
     randomFear = Math.floor(Math.random() * 101);
     randomFearString = JSON.stringify(fearsData.fears[randomFear]);
@@ -101,7 +102,7 @@ async function nightmareGeneration() {
 }
 async function cleanResponse(response) {
     console.log("Cleaning response");
-    
+
     // Ensure response is an array before joining
     if (!Array.isArray(response)) {
         console.error("Response is not an array:", response);
@@ -112,7 +113,7 @@ async function cleanResponse(response) {
 
     // Trim whitespace from both ends
     cleanedString = cleanedString.trim();
-    
+
     // Replace multiple newlines with a single space
     cleanedString = cleanedString.replace(/\n+/g, " ");
 
@@ -152,55 +153,70 @@ async function getEmbeddings(responseString) {
     //console.log("embeddingsJSON", embeddingsJSON.output);
     // document.body.style.cursor = "auto";
     // localStorage.setItem("embeddings", JSON.stringify(embeddingsJSON.output));
-    lowDimEmbeddings = await runUMAP(embeddingsJSON.output)
+    // console.log("embeddingsJSON.output[0].embedding", embeddingsJSON.output[0].embedding);
+    highDimEmbeddings = embeddingsJSON.output[0].embedding;
+    // lowDimEmbeddings = await runUMAP(embeddingsJSON.output)
 }
 
 async function runUMAP(embeddingsAndSentences) {
-    // console.log("embeddingsAndSentences", embeddingsAndSentences);
+    console.log("Running UMAP");
+    console.log("embeddingsAndSentences", embeddingsAndSentences);
     let embeddings = [];
-    var totalNum = 0; ; 
+    var totalNum = 0;;
     //console.log("embeddingsAndSentences length:", embeddingsAndSentences[0].embedding.length);
 
-    for (let i = 0; i < embeddingsAndSentences[0].embedding.length; i++) {
-        embeddings.push(embeddingsAndSentences[0].embedding[i]);
-        totalNum++;
+    // Validate the input
+    if (!embeddingsAndSentences || !Array.isArray(embeddingsAndSentences)) {
+        console.error("Invalid embeddingsAndSentences data:", embeddingsAndSentences);
+        return [];
     }
-    console.log("totalNum: ", totalNum);
-    console.log("embeddings[totalNum]: ", embeddings[totalNum-1]);
-    
-    // return; 
 
-    var myrng = seedrandom('hello.');
-    let umap = new UMAP({
-        nNeighbors: 6,
-        minDist: 0.1,
-        nComponents: 2,
-        random: myrng,  //special library seeded random so it is the same random numbers every time
-        spread: 0.99,
-        //distanceFn: 'cosine',
-    });
-    
+    // Extract embeddings assuming each entry has an 'embedding' array
+    for (let i = 0; i < embeddingsAndSentences.length; i++) {
+        const embedding = embeddingsAndSentences[i].embedding;
+        if (Array.isArray(embedding)) {
+            embeddings.push(embedding);
+            totalNum++;
+        } else {
+            console.warn(`Embedding at index ${i} is not an array:`, embedding);
+        }
+    }
+
+    console.log("Total embeddings collected:", totalNum);
+
     if (embeddings.length < 2) {
         console.log("Not enough data points for UMAP. Skipping dimensionality reduction.");
-        return;
-    }
-    
-    let fittings = umap.fit(embeddings);
-    //console.log("fittings:", fittings);
-    fittings = normalize(fittings);  //normalize to 0-1
-    //console.log("normalized fittings:", fittings);
-    console.log("embeddingsAndSentences length:", embeddingsAndSentences.length);
-    for (let i = 0; i < embeddingsAndSentences.length; i++) {
-        console.log("embeddingsAndSentences[i].input:", embeddingsAndSentences[i].input);
-        console.log("fittings[i]:"); 
-        console.log(fittings[i]);
-        return fittings[i];
-        // placeSentence(embeddingsAndSentences[i].input, fittings[i]);
-    }
-    //console.log("fitting", fitting);
+        return [];
 
-    
+        var myrng = seedrandom('hello.');
+        let umap = new UMAP({
+            nNeighbors: 6,
+            minDist: 0.1,
+            nComponents: 2,
+            random: myrng,  //special library seeded random so it is the same random numbers every time
+            spread: 0.99,
+            //distanceFn: 'cosine',
+        });
+
+        let fittings = umap.fit(embeddings);
+        //console.log("fittings:", fittings);
+        fittings = normalize(fittings);  //normalize to 0-1
+        //console.log("normalized fittings:", fittings);
+        // console.log("embeddingsAndSentences length:", embeddingsAndSentences.length);
+
+        for (let i = 0; i < embeddingsAndSentences.length; i++) {
+            const input = embeddingsAndSentences[i].input;
+            const fit = fittings[i];
+            console.log(`embeddingsAndSentences[${i}].input:`, input);
+            console.log(`fittings[${i}]:`, fit);
+            // You can process each fit here if needed
+        }
+        //console.log("fitting", fitting);
+
+        return fittings;
+    }
 }
+
 
 function normalize(arrayOfNumbers) {
     //find max and min in the array
@@ -229,7 +245,7 @@ function normalize(arrayOfNumbers) {
 async function initializeDB() {
     await db.read(); // Read data from the JSON file
     db.data = db.data || defaultData; // If no data is present, set default
-  }
+}
 
 function loadFearRandomizer() {
     //load fears.json to help randomize fear generation prompting
