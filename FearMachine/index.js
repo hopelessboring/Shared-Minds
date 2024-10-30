@@ -20,6 +20,7 @@ let fearsData;
 let randomFear;
 let randomFearString;
 let responseString;
+let lowDimEmbeddings;
 
 //Setup LowDB
 // const { Low, JSONFile } = require('lowdb');
@@ -57,7 +58,7 @@ loadFearRandomizer(); //Initialize the fear randomizer for ML prompting
 io.on('connection', (socket) => {
     socket.on('newFearClick', async (clickData) => {
         const { randomFearString, responseString } = await nightmareGeneration(); //Initialize the nightmare generation API endpoint
-        db.data.nightmares.push({ buttonid: `${clickData.buttonID}`, timestamp: `${clickData.timestamp}`, fearPrompt: `${randomFearString}`, cleanResponse: `${responseString}` });
+        db.data.nightmares.push({ buttonid: `${clickData.buttonID}`, timestamp: `${clickData.timestamp}`, fearPrompt: `${randomFearString}`, cleanResponse: `${responseString}`, lowDimEmbeddings: `${lowDimEmbeddings}`});
         await db.write();
         console.log(`newFearClick added to database ${clickData.buttonID} pressed at ${clickData.timestamp}`);
     });
@@ -151,7 +152,7 @@ async function getEmbeddings(responseString) {
     //console.log("embeddingsJSON", embeddingsJSON.output);
     // document.body.style.cursor = "auto";
     // localStorage.setItem("embeddings", JSON.stringify(embeddingsJSON.output));
-    runUMAP(embeddingsJSON.output)
+    lowDimEmbeddings = await runUMAP(embeddingsJSON.output)
 }
 
 async function runUMAP(embeddingsAndSentences) {
@@ -188,12 +189,16 @@ async function runUMAP(embeddingsAndSentences) {
     //console.log("fittings:", fittings);
     fittings = normalize(fittings);  //normalize to 0-1
     //console.log("normalized fittings:", fittings);
+    console.log("embeddingsAndSentences length:", embeddingsAndSentences.length);
     for (let i = 0; i < embeddingsAndSentences.length; i++) {
         console.log("embeddingsAndSentences[i].input:", embeddingsAndSentences[i].input);
         console.log("fittings[i]:", fittings[i]);
+        return JSON.parse(fittings[i]);
         // placeSentence(embeddingsAndSentences[i].input, fittings[i]);
     }
     //console.log("fitting", fitting);
+
+    
 }
 
 function normalize(arrayOfNumbers) {

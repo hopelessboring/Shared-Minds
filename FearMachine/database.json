@@ -275,6 +275,26 @@
       "timestamp": "1730233947317",
       "fearPrompt": "\"Biometric tracking and surveillance\"",
       "cleanResponse": "Watching eyes in every corner"
+    },
+    {
+      "buttonid": "inputBox",
+      "timestamp": "1730288488175",
+      "fearPrompt": "\"Falling\"",
+      "cleanResponse": "Falling from the edge of reality"
+    },
+    {
+      "buttonid": "inputBox",
+      "timestamp": "1730289080061",
+      "fearPrompt": "\"Fear of being alone\"",
+      "cleanResponse": "Echoes of loneliness in Nothing",
+      "lowDimEmbeddings": "0.5740080098813107,0.22458979000607676"
+    },
+    {
+      "buttonid": "inputBox",
+      "timestamp": "1730289686430",
+      "fearPrompt": "\"The unknown fate of a loved one\"",
+      "cleanResponse": "Loss of the ones left behind",
+      "lowDimEmbeddings": "undefined"
     }
   ]
 }
