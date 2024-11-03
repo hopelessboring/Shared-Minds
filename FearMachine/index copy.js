@@ -23,11 +23,6 @@ let responseString;
 let lowDimEmbeddings;
 let highDimEmbeddings;
 
-app.get('/nightmares', async (req, res) => {
-    await db.read();
-    res.json(db.data.nightmares);
-});
-
 //Setup LowDB
 // const { Low, JSONFile } = require('lowdb');
 import { Low } from 'lowdb';
@@ -63,21 +58,14 @@ loadFearRandomizer(); //Initialize the fear randomizer for ML prompting
 
 io.on('connection', (socket) => {
     socket.on('newFearClick', async (clickData) => {
-        const { randomFearString, responseString } = await nightmareGeneration();
-        db.data.nightmares.push({
-            buttonid: clickData.buttonID,
-            timestamp: clickData.timestamp,
-            fearPrompt: randomFearString,
-            cleanResponse: responseString,
-            highDimEmbeddings: highDimEmbeddings,
-            lowDimEmbeddings: lowDimEmbeddings
-        });
+        const { randomFearString, responseString } = await nightmareGeneration(); //Initialize the nightmare generation API endpoint
+        db.data.nightmares.push({ buttonid: clickData.buttonID, timestamp: clickData.timestamp, fearPrompt: randomFearString, cleanResponse: responseString, highDimEmbeddings: highDimEmbeddings, lowDimEmbeddings: lowDimEmbeddings });
         await db.write();
         console.log(`newFearClick added to database ${clickData.buttonID} pressed at ${clickData.timestamp}`);
+        console.log("database: ", db.data);
+        // console.log("db.data.nightmares", db.data.nightmares[0].highDimEmbeddings);
         await runUMAP(db.data);
 
-        // Emit to the client when new data is ready
-        socket.emit('newDataReady');
     });
 });
 
@@ -170,53 +158,52 @@ async function getEmbeddings(responseString) {
     // document.body.style.cursor = "auto";
     // localStorage.setItem("embeddings", JSON.stringify(embeddingsJSON.output));
     // console.log("embeddingsJSON.output[0].embedding", embeddingsJSON.output[0].embedding);
-
-    if (highDimEmbeddings && highDimEmbeddings.length > 0) {
-        db.data.nightmares.push({
-            buttonid: clickData.buttonID,
-            timestamp: clickData.timestamp,
-            fearPrompt: randomFearString,
-            cleanResponse: responseString,
-            highDimEmbeddings: highDimEmbeddings,
-        });
-        await db.write();
-    }
-
     highDimEmbeddings = embeddingsJSON.output[0].embedding;
 
 }
 
 async function runUMAP(nightmareDatabase) {
     console.log("Running UMAP");
+    // console.log("nightmareDatabase", nightmareDatabase);
+    let embeddings = [];
+    var totalNum = 0;
 
-    let embeddings = nightmareDatabase.nightmares
-        .map(nightmare => nightmare.highDimEmbeddings)
-        .filter(embedding => Array.isArray(embedding) && embedding.length > 0);
-
-    if (embeddings.length < 2) {
+    if (nightmareDatabase.length < 2) {
         console.log("Not enough data points for UMAP. Skipping dimensionality reduction.");
         return [];
     }
 
-    // Adjust `nNeighbors` to be the lesser of 6 or the number of available embeddings
-    const nNeighbors = Math.min(6, embeddings.length);
+    // Extract embeddings
+    for (let i = 0; i < nightmareDatabase.length; i++) {
+        embeddings.push(nightmareDatabase.nightmares[i].highDimEmbeddings);
+        console.log(`embeddings[${i}]:`, embeddings[i]);
+    }
 
-    const myrng = seedrandom('hello.');
-    const umap = new UMAP({
-        nNeighbors,
+    var myrng = seedrandom('hello.');
+    let umap = new UMAP({
+        nNeighbors: 6,
         minDist: 0.1,
         nComponents: 2,
-        random: myrng,
+        random: myrng,  //special library seeded random so it is the same random numbers every time
         spread: 0.99,
+        //distanceFn: 'cosine',
     });
 
     let fittings = umap.fit(embeddings);
-    fittings = normalize(fittings);
+    //console.log("fittings:", fittings);
+    fittings = normalize(fittings);  //normalize to 0-1
+    //console.log("normalized fittings:", fittings);
+    // console.log("nightmareDatabase length:", nightmareDatabase.length);
 
-    for (let i = 0; i < fittings.length; i++) {
+    for (let i = 0; i < nightmareDatabase.length; i++) {
+        // const input = nightmareDatabase[i].input;
+        // const fit = fittings[i];
+        console.log(`input: , nightmareDatabase.nightmares[${i}].cleanResponse`);
+        console.log(`fittings[${i}]:`, fittings[i]);
         nightmareDatabase.nightmares[i].lowDimEmbeddings = fittings[i];
+        await nightmareDatabase.write();
+        // You can process each fit here if needed
     }
-    await db.write();
 }
 
 
